@@ -8,34 +8,27 @@ GLuint vaoID,vboID[2],eboID;
 GLuint program;
 
 GLfloat pit,yaw,scalar=1;
-glm::vec3 cubeTran;
+glm::vec3 triTran;
 
 GLfloat size=10;
 
-GLfloat vertexarray[]={size,size,-size,
-		       	           size,-size,-size,
-                       -size,-size,-size,
-                       -size,size,-size,
-                       size,size,size,
-                       size,-size,size,
-                       -size,-size,size,
-                       -size,size,size
-                       };
+GLfloat vertexarray[]={
+	-size, -size, size,
+	size, size, size,
+	size, -size, -size,
+	-size, size, -size
+};
 
-GLfloat colorarray[]={1.0f,1.0f,1.0f,1.0f,
-	              			0.5f,1.0f,1.0f,1.0f,
-		      						1.0f,0.5f,1.0f,1.0f,
-		      						1.0f,1.0f,0.5f,1.0f,
-		      						1.0f,1.0f,1.0f,1.0f,
-		      						0.5f,1.0f,1.0f,1.0f,
-		      						1.0f,0.5f,1.0f,1.0f,
-                      1.0f,1.0f,0.5f,1.0f
-	              			};
+GLfloat colorarray[]={
+	0.0f,0.0f,1.0f,1.0f,
+	1.0f,1.0f,1.0f,1.0f,
+	1.0f,0.0f,1.0f,1.0f,
+	0.0f,1.0f,0.0f,1.0f
+};
 											
- GLubyte elems[]={0,1,2,3,7,4,5,6,
-    	          	7,3,0,4,5,6,2,1,
-    		  				0,1,5,4,7,3,2,6
-                 };
+ GLubyte elems[]={
+	0,1,2,3,0,1
+};
 
 void init(){
 	 glEnable(GL_DEPTH_TEST);
@@ -76,15 +69,15 @@ void display(SDL_Window* screen){
 	
 	glm::mat4 trans;
 	
-	trans=glm::translate(trans,cubeTran);//translate the cube
-  trans=glm::rotate(trans,pit,glm::vec3(1,0,0));//rotate the cube around the x axis
-  trans=glm::rotate(trans,yaw,glm::vec3(0,1,0));//rotate the cube arround the y axis
-  trans=glm::scale(trans,glm::vec3(scalar));//scaling the cube
+	trans=glm::translate(trans,triTran);//translate the triangle
+  trans=glm::rotate(trans,pit,glm::vec3(1,0,0));//rotate the triangle around the x axis
+  trans=glm::rotate(trans,yaw,glm::vec3(0,1,0));//rotate the triangle arround the y axis
+  trans=glm::scale(trans,glm::vec3(scalar));//scaling the triangle
     
   GLint tempLoc = glGetUniformLocation(program,"modelMatrix");//Matrix that handle the transformations
 	glUniformMatrix4fv(tempLoc,1,GL_FALSE,&trans[0][0]);
 	
-	glDrawElements(GL_POLYGON,24,GL_UNSIGNED_BYTE,NULL);
+	glDrawElements(GL_TRIANGLE_STRIP,24,GL_UNSIGNED_BYTE,NULL);
 	glFlush();
 	SDL_GL_SwapWindow(screen);
 }
@@ -99,10 +92,10 @@ SDL_Event event;
 			case SDL_KEYDOWN:
 				switch(event.key.keysym.sym){
 					case SDLK_ESCAPE:exit(0);
-					case SDLK_w:cubeTran.y+=2;break;
-					case SDLK_s:cubeTran.y-=2;break;
-					case SDLK_a:cubeTran.x-=2;break;
-					case SDLK_d:cubeTran.x+=2;break;
+					case SDLK_w:triTran.y+=2;break;
+					case SDLK_s:triTran.y-=2;break;
+					case SDLK_a:triTran.x-=2;break;
+					case SDLK_d:triTran.x+=2;break;
 					case SDLK_e:scalar+=.1f;break;
 					case SDLK_q:scalar-=.1f;break;
 					case SDLK_i:pit+=2;break;
@@ -135,7 +128,7 @@ int main(int argc, char **argv){
 
 	//create window
 	window = SDL_CreateWindow(
-		"Example", //Window title
+		"Schwarz - Lab 3", //Window title
 		SDL_WINDOWPOS_UNDEFINED, //initial x position
 		SDL_WINDOWPOS_UNDEFINED, //initial y position
 		500,							//width, in pixels
